@@ -2,6 +2,10 @@
 
 _\( managed using [todo-md](https://github.com/Hypercubed/todo-md) \)_
 
-- [ ] Tests
+- [x] Tests
+  - [ ] getRows
 - [ ] Publish
-- [ ] Readme
+- [x] Readme
+  - [ ] getRows
+- [ ] Make get both config and accessor option in get and getRows
+- [ ] .post shortcut(s)

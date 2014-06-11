@@ -113,7 +113,7 @@
         }), f);
       };
 
-      dsv.getRows = function(url, requestConfig, f) {
+      dsv.getRows = function(url, requestConfig, f) {  // TODO: make both optional, test
         var config = {
           method: 'get',
           url: url,
@@ -121,7 +121,7 @@
             return dsv.parseRows(data, f);
           }
         };
-        angular.extend(config, requestConfig);
+        angular.extend(config, requestConfig || {});
         return $http(config);
       };
 
