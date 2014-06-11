@@ -16,7 +16,7 @@ module.exports = function(grunt){
         commitMessage: 'release %VERSION%',
         commitFiles: ['package.json','bower.json','<%= pkg.name %>.min.js'],
         pushTo: 'origin',
-        push: false,
+        push: true,
       }
     },
 
