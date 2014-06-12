@@ -53,6 +53,26 @@ describe('Factory: dsv', function () {
       })
     });
 
+    describe('#getRows', function() {
+      it('should load a file', function(done) {
+
+        $httpBackend.expectGET('test.csv')
+          .respond("a,b,c\n1,2,3\n4,5,6\n7,8,9");
+
+        dsv.csv.getRows('test.csv').then(function(response) {
+          expect(response.data).toEqual([
+            ["a","b","c"],
+            ["1", "2","3"],
+            ["4", "5", "6"],
+            ["7", "8", "9"]
+          ]);
+        });
+
+        $httpBackend.flush();
+
+      })
+    });
+
     describe('#parse', function() {
       it('returns an array of objects', function() {
         expect(dsv.csv.parse("a,b,c\n1,2,3\n")).toEqual([{a: "1", b: "2", c: "3"}]);
@@ -90,17 +110,109 @@ describe('Factory: dsv', function () {
   })
 
   describe('tsv', function() {
+
     describe('#get', function() {
       it('should load a file', function(done) {
 
         $httpBackend.expectGET('test.tsv')
           .respond("a\tb\tc\n1\t2\t3\n4\t5\t6\n7\t8\t9");
 
-        dsv.tsv.get('test.tsv').then(function(response) {
-          expect(response.data).toEqual([
+        dsv.tsv.get('test.tsv').success(function(data) {
+          expect(data).toEqual([
             {a: "1", b: "2", c: "3"},
             {a: "4", b: "5", c: "6"},
             {a: "7", b: "8", c: "9"}
+          ]);
+        });
+
+        $httpBackend.flush();
+        
+      })
+
+      it('should accept a config object and accesor function', function(done) {
+
+        $httpBackend.expectGET('test.tsv')
+          .respond("a\tb\tc\n1\t2\t3\n4\t5\t6\n7\t8\t9");
+
+        dsv.tsv.get('test.tsv', { cache: true }, function(d) { return (+d.a + +d.b + +d.c) }).success(function(data) {
+          expect(data).toEqual([
+            6,
+            15,
+            24
+          ]);
+        });
+
+        $httpBackend.flush();
+        
+      })
+
+      it('config object should be optional', function(done) {
+
+        $httpBackend.expectGET('test.tsv')
+          .respond("a\tb\tc\n1\t2\t3\n4\t5\t6\n7\t8\t9");
+
+        dsv.tsv.get('test.tsv', function(d) { return (+d.a + +d.b + +d.c) }).success(function(data) {
+          expect(data).toEqual([
+            6,
+            15,
+            24
+          ]);
+        });
+
+        $httpBackend.flush();
+        
+      })
+
+    });
+
+    describe('#getRows', function() {
+      it('should load a file', function(done) {
+
+        $httpBackend.expectGET('test.tsv')
+          .respond("a\tb\tc\n1\t2\t3\n4\t5\t6\n7\t8\t9");
+
+        dsv.tsv.getRows('test.tsv').success(function(data) {
+          expect(data).toEqual([
+            ["a","b","c"],
+            ["1", "2","3"],
+            ["4", "5", "6"],
+            ["7", "8", "9"]
+          ]);
+        });
+
+        $httpBackend.flush();
+        
+      })
+
+      it('should accept a config object and accesor function', function(done) {
+
+        $httpBackend.expectGET('test.tsv')
+          .respond("a\tb\tc\n1\t2\t3\n4\t5\t6\n7\t8\t9");
+
+        dsv.tsv.getRows('test.tsv',{}, function(d) { return { values: d }; }).success(function(data) {
+          expect(data).toEqual([
+            { values: ["a","b","c"] },
+            { values: ["1", "2","3"] },
+            { values: ["4", "5", "6"] },
+            { values: ["7", "8", "9"] }
+          ]);
+        });
+
+        $httpBackend.flush();
+        
+      })
+
+      it('config object should be optional', function(done) {
+
+        $httpBackend.expectGET('test.tsv')
+          .respond("a\tb\tc\n1\t2\t3\n4\t5\t6\n7\t8\t9");
+
+        dsv.tsv.getRows('test.tsv', function(d) { return { values: d }; }).success(function(data) {
+          expect(data).toEqual([
+            { values: ["a","b","c"] },
+            { values: ["1", "2","3"] },
+            { values: ["4", "5", "6"] },
+            { values: ["7", "8", "9"] }
           ]);
         });
 

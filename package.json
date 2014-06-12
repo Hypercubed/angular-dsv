@@ -31,7 +31,9 @@
     "angularjs",
     "dsv",
     "tsv",
-    "csv"
+    "csv",
+    "tabular",
+    "data"
   ],
   "author": "J. Harshbarger",
   "license": "MIT",

@@ -10,7 +10,9 @@
     "angularjs",
     "dsv",
     "tsv",
-    "csv"
+    "csv",
+    "tabular",
+    "data"
   ],
   "license": "MIT",
   "ignore": [

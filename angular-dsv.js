@@ -106,14 +106,26 @@
         });
       };
 
-      dsv.get = function(url, config, f) {
-        return dsv(angular.extend(config || {}, {
+      dsv.get = function(url, requestConfig, f) {
+        if (typeof requestConfig === 'function') {
+          var t = f;
+          f = requestConfig;
+          requestConfig = t;
+        }
+        var config = {
           method: 'get',
           url: url
-        }), f);
+        };
+        angular.extend(config, requestConfig || {});
+        return dsv(config, f);
       };
 
-      dsv.getRows = function(url, requestConfig, f) {  // TODO: make both optional, test
+      dsv.getRows = function(url, requestConfig, f) {
+        if (typeof requestConfig === 'function') {
+          var t = f;
+          f = requestConfig;
+          requestConfig = t;
+        }
         var config = {
           method: 'get',
           url: url,
@@ -122,7 +134,7 @@
           }
         };
         angular.extend(config, requestConfig || {});
-        return $http(config);
+        return dsv(config, f);
       };
 
       return dsv;
