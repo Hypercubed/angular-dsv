@@ -1,0 +1,31 @@
+{
+  "name": "angular-dsv",
+  "version": "0.0.3",
+  "authors": [
+    "J. Harshbarger"
+  ],
+  "description": "",
+  "main": "angular-dsv.js",
+  "keywords": [
+    "angularjs",
+    "dsv",
+    "tsv",
+    "csv",
+    "tabular",
+    "data"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": ">= 1.2.5"
+  },
+  "devDependencies": {
+    "angular-mocks": ">= 1.2.5"
+  }
+}
