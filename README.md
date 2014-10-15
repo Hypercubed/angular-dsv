@@ -1,4 +1,4 @@
-# angular-dsv
+# angular-dsv [![Bower version](https://badge.fury.io/bo/angular-dsv.png)](http://badge.fury.io/bo/angular-dsv)
 delimter-seperated-values
 
 A angularjs service for reading tabular data from text files; for example tab-delimited and comma-delimited.  angular-dsv combines the convenience of the [d3 csv/tsv module](https://github.com/mbostock/d3/wiki/CSV) with angular's [$http](https://docs.angularjs.org/api/ng/service/$http) service.  angular-dsv is RFC4180-compliant and dependent only on angular itself.
