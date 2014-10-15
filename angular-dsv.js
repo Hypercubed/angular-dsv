@@ -32,7 +32,7 @@
 
 			if ($window.d3) {   // shim #dsv.parseRows
 				//$log.debug('hc.dsv Using d3.dsv');
-				var d3_dsv = d3.dsv(delimiter);
+				var d3_dsv = $window.d3.dsv(delimiter);
 				dsv.parseRows = d3_dsv.parseRows;
 				dsv.parse = d3_dsv.parse;
 			} else {
