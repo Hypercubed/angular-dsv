@@ -13,7 +13,7 @@
 
   var app = angular.module('hc.dsv', []);
 
-  app.factory('dsv', function ($http,$window) {
+  app.factory('dsv', ['$http', '$window', function ($http,$window) {
 
     function dsvFactory(delimiter) {
       var delimiterCode = delimiter.charCodeAt(0);
@@ -153,6 +153,6 @@
 
     return dsvFactory;
 
-  });
+  }]);
 
 }());
