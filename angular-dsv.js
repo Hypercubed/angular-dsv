@@ -140,7 +140,7 @@
         var params = parseParams(requestConfig, f);
 
         var config = {
-          method: 'get',
+          method: 'post',
           url: url,
           transformResponse: function(data) {
             return dsv.parseRows(data, params.f);
