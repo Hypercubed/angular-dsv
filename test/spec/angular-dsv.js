@@ -126,10 +126,10 @@ describe('Factory: dsv', function () {
         });
 
         $httpBackend.flush();
-        
+
       })
 
-      it('should accept a config object and accesor function', function(done) {
+      it('should accept a config object and accessor function', function(done) {
 
         $httpBackend.expectGET('test.tsv')
           .respond("a\tb\tc\n1\t2\t3\n4\t5\t6\n7\t8\t9");
@@ -143,7 +143,7 @@ describe('Factory: dsv', function () {
         });
 
         $httpBackend.flush();
-        
+
       })
 
       it('config object should be optional', function(done) {
@@ -160,7 +160,7 @@ describe('Factory: dsv', function () {
         });
 
         $httpBackend.flush();
-        
+
       })
 
     });
@@ -181,10 +181,10 @@ describe('Factory: dsv', function () {
         });
 
         $httpBackend.flush();
-        
+
       })
 
-      it('should accept a config object and accesor function', function(done) {
+      it('should accept a config object and accessor function', function(done) {
 
         $httpBackend.expectGET('test.tsv')
           .respond("a\tb\tc\n1\t2\t3\n4\t5\t6\n7\t8\t9");
@@ -199,7 +199,7 @@ describe('Factory: dsv', function () {
         });
 
         $httpBackend.flush();
-        
+
       })
 
       it('config object should be optional', function(done) {
@@ -217,7 +217,7 @@ describe('Factory: dsv', function () {
         });
 
         $httpBackend.flush();
-        
+
       })
     });
 
@@ -253,7 +253,7 @@ describe('Factory: dsv', function () {
           {a: "7", b: "8", c: "9"}
         ]);
       });
-    }) 
+    })
 
     describe('#parseRows', function() {
 
@@ -266,7 +266,7 @@ describe('Factory: dsv', function () {
         ]);
       });
 
-    }) 
+    })
   })
 
 

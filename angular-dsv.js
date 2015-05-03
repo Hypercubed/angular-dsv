@@ -13,7 +13,7 @@
 
   var app = angular.module('hc.dsv', []);
 
-  app.factory('dsv', ['$http', '$window', function ($http,$window) {
+  app.factory('dsv', ['$http', '$window', function ($http, $window) {
 
     function dsvFactory(delimiter) {
       var delimiterCode = delimiter.charCodeAt(0);
@@ -112,39 +112,48 @@
 				};
 			}
 
+      function parseParams(requestConfig, f){
+        return angular.isFunction(requestConfig) ? {
+          requestConfig: null,
+          f: requestConfig
+        } : {
+          requestConfig: requestConfig,
+          f: f
+        };
+      }
+
       dsv.get = function(url, requestConfig, f) {
-        if (angular.isFunction(requestConfig)) {
-          var t = f;
-          f = requestConfig;
-          requestConfig = t;
-        }
+        var params = parseParams(requestConfig, f);
+
         var config = {
           method: 'get',
           url: url
         };
-        angular.extend(config, requestConfig || {});
-        return dsv(config, f);
+
+        return dsv(
+          angular.extend(config, params.requestConfig),
+          params.f
+        );
       };
 
       dsv.getRows = function(url, requestConfig, f) {
-        if (angular.isFunction(requestConfig)) {
-          var t = f;
-          f = requestConfig;
-          requestConfig = t;
-        }
+        var params = parseParams(requestConfig, f);
+
         var config = {
           method: 'get',
           url: url,
           transformResponse: function(data) {
-            return dsv.parseRows(data, f);
+            return dsv.parseRows(data, params.f);
           }
         };
-        angular.extend(config, requestConfig || {});
-        return dsv(config, f);
+
+        return dsv(
+          angular.extend(config, params.requestConfig),
+          params.f
+        );
       };
 
       return dsv;
-
     }
 
     dsvFactory.tsv = dsvFactory('\t');
