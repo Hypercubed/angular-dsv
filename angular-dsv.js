@@ -19,7 +19,6 @@
       var delimiterCode = delimiter.charCodeAt(0);
 
       function dsv(requestConfig, f) {
-
         var config = {
           method: 'get',
           transformResponse: function(data) {
@@ -114,7 +113,7 @@
 			}
 
       dsv.get = function(url, requestConfig, f) {
-        if (typeof requestConfig === 'function') {
+        if (angular.isFunction(requestConfig)) {
           var t = f;
           f = requestConfig;
           requestConfig = t;
@@ -128,7 +127,7 @@
       };
 
       dsv.getRows = function(url, requestConfig, f) {
-        if (typeof requestConfig === 'function') {
+        if (angular.isFunction(requestConfig)) {
           var t = f;
           f = requestConfig;
           requestConfig = t;
