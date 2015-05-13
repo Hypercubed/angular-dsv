@@ -40,7 +40,28 @@ module.exports = function(grunt){
       once: {
         configFile: 'karma.conf.js',
         singleRun: true,
-        browsers: ['PhantomJS']
+        browsers: ['PhantomJS'],
+        options: {
+          files: [
+            'bower_components/angular/angular.js',
+            'bower_components/angular-mocks/angular-mocks.js',
+            '<%= pkg.name %>.js',
+            'test/spec/**/*.js'
+          ]
+        }
+      },
+      minified: {
+        configFile: 'karma.conf.js',
+        singleRun: true,
+        browsers: ['PhantomJS'],
+        options: {
+          files: [
+            'bower_components/angular/angular.js',
+            'bower_components/angular-mocks/angular-mocks.js',
+            '<%= pkg.name %>.min.js',
+            'test/spec/**/*.js'
+          ]
+        }
       },
       server: {
         configFile: 'karma.conf.js',
@@ -59,8 +80,8 @@ module.exports = function(grunt){
   require('load-grunt-tasks')(grunt);
 
   grunt.registerTask('default', ['build']);
-  grunt.registerTask('build', ['jshint', 'test', 'uglify']);
-  grunt.registerTask('test', ['karma:once']);
-  grunt.registerTask('publish', ['jshint','test','bump-only','uglify','bump-commit']);
+  grunt.registerTask('build', ['test']);
+  grunt.registerTask('test', ['jshint','karma:once','uglify','karma:minified']);
+  grunt.registerTask('publish', ['test','bump-only','uglify','bump-commit']);
 
 };
