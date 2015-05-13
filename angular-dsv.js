@@ -13,13 +13,12 @@
 
   var app = angular.module('hc.dsv', []);
 
-  app.factory('dsv', function ($http,$window) {
+  app.factory('dsv', ['$http', '$window', function ($http, $window) {
 
     function dsvFactory(delimiter) {
       var delimiterCode = delimiter.charCodeAt(0);
 
       function dsv(requestConfig, f) {
-
         var config = {
           method: 'get',
           transformResponse: function(data) {
@@ -113,39 +112,48 @@
 				};
 			}
 
+      function parseParams(requestConfig, f){
+        return angular.isFunction(requestConfig) ? {
+          requestConfig: null,
+          f: requestConfig
+        } : {
+          requestConfig: requestConfig,
+          f: f
+        };
+      }
+
       dsv.get = function(url, requestConfig, f) {
-        if (typeof requestConfig === 'function') {
-          var t = f;
-          f = requestConfig;
-          requestConfig = t;
-        }
+        var params = parseParams(requestConfig, f);
+
         var config = {
           method: 'get',
           url: url
         };
-        angular.extend(config, requestConfig || {});
-        return dsv(config, f);
+
+        return dsv(
+          angular.extend(config, params.requestConfig),
+          params.f
+        );
       };
 
       dsv.getRows = function(url, requestConfig, f) {
-        if (typeof requestConfig === 'function') {
-          var t = f;
-          f = requestConfig;
-          requestConfig = t;
-        }
+        var params = parseParams(requestConfig, f);
+
         var config = {
           method: 'get',
           url: url,
           transformResponse: function(data) {
-            return dsv.parseRows(data, f);
+            return dsv.parseRows(data, params.f);
           }
         };
-        angular.extend(config, requestConfig || {});
-        return dsv(config, f);
+
+        return dsv(
+          angular.extend(config, params.requestConfig),
+          params.f
+        );
       };
 
       return dsv;
-
     }
 
     dsvFactory.tsv = dsvFactory('\t');
@@ -153,6 +161,6 @@
 
     return dsvFactory;
 
-  });
+  }]);
 
 }());
