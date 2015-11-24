@@ -16,9 +16,10 @@
   },
   "scripts": {
     "test": "karma start",
-    "uglify": "uglifyjs angular-dsv.js -o angular-dsv.min.js",
+    "uglify": "uglifyjs angular-dsv.js -o angular-dsv.min.js --mangle",
     "browserify": "browserify lib/angular-dsv.js -s angular-dsv -o angular-dsv.js",
-    "build": "npm run browserify && npm run uglify"
+    "build": "npm run browserify && npm run uglify",
+    "lint": "semistandard"
   },
   "repository": {
     "type": "git",
@@ -37,5 +38,10 @@
   "bugs": {
     "url": "https://github.com/Hypercubed/angular-dsv/issues"
   },
-  "homepage": "https://github.com/Hypercubed/angular-dsv"
+  "homepage": "https://github.com/Hypercubed/angular-dsv",
+  "semistandard": {
+    "ignore": [
+      "/*.js"
+    ]
+  }
 }
