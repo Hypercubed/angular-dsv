@@ -21,7 +21,8 @@
   "scripts": {
     "test": "karma start",
     "uglify": "uglifyjs angular-dsv.js -o angular-dsv.min.js",
-    "build": "npm run uglify"
+    "browserify": "browserify lib/angular-dsv.js -s angular-dsv -o angular-dsv.js",
+    "build": "npm run browserify && npm run uglify"
   },
   "repository": {
     "type": "git",
