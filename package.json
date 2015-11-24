@@ -22,7 +22,7 @@
     "uglify-js": "^2.6.1"
   },
   "scripts": {
-    "test": "npm run browserify && karma start",
+    "test": "npm run build && karma start",
     "uglify": "uglifyjs angular-dsv.js -o angular-dsv.min.js --mangle",
     "browserify": "browserify lib/angular-dsv.js -s angular-dsv -o angular-dsv.js",
     "build": "npm run browserify && npm run uglify",
