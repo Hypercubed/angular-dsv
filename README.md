@@ -91,7 +91,7 @@ Install npm and bower dependencies:
 
 ## Acknowledgments
 
-Portions of this code were taken from mbostock's [d3 csv/tsv module](https://github.com/mbostock/d3/wiki/CSV)
+Previously portions of this code were taken from mbostock's [d3 csv/tsv module](https://github.com/mbostock/d3/wiki/CSV).  Now using [d3-dsv](https://github.com/d3/d3-dsv).
 
 ## License
 MIT
