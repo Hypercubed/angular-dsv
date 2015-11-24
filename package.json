@@ -3,6 +3,11 @@
   "version": "0.0.5",
   "description": "",
   "main": "lib/angular-dsv.js",
+  "files": [
+    "lib",
+    "angular-dsv.js",
+    "angular-dsv.min.js"
+  ],
   "directories": {
     "test": "test"
   },
