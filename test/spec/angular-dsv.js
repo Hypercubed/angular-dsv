@@ -34,16 +34,19 @@ describe('Factory: dsv', function () {
 
   describe('csv', function () {
     describe('#get', function () {
-      it('should load a file', function (done) {
+      it('should load a file', function () {
         $httpBackend.expectGET('test.csv')
           .respond('a,b,c\n1,2,3\n4,5,6\n7,8,9');
 
+        var expected = [
+          {a: '1', b: '2', c: '3'},
+          {a: '4', b: '5', c: '6'},
+          {a: '7', b: '8', c: '9'}
+        ];
+        expected.columns = ['a', 'b', 'c'];
+
         dsv.csv.get('test.csv').then(function (response) {
-          expect(response.data).toEqual([
-            {a: '1', b: '2', c: '3'},
-            {a: '4', b: '5', c: '6'},
-            {a: '7', b: '8', c: '9'}
-          ]);
+          expect(response.data).toEqual(expected);
         });
 
         $httpBackend.flush();
@@ -51,7 +54,7 @@ describe('Factory: dsv', function () {
     });
 
     describe('#getRows', function () {
-      it('should load a file', function (done) {
+      it('should load a file', function () {
         $httpBackend.expectGET('test.csv')
           .respond('a,b,c\n1,2,3\n4,5,6\n7,8,9');
 
@@ -69,82 +72,93 @@ describe('Factory: dsv', function () {
     });
 
     describe('#parse', function () {
-      it('returns an array of objects', function () {
-        expect(dsv.csv.parse('a,b,c\n1,2,3\n')).toEqual([{a: '1', b: '2', c: '3'}]);
+      it('returns an array of objects with the additional `columns` field', function () {
+        var expected = [{a: '1', b: '2', c: '3'}];
+        expected.columns = ['a', 'b', 'c'];
+        expect(dsv.csv.parse('a,b,c\n1,2,3\n')).toEqual(expected);
       });
 
       it('parses quoted values', function () {
-        expect(dsv.csv.parse('a,b,c\n1,"he,l\tlo",3\n')).toEqual([{a: '1', b: 'he,l\tlo', c: '3'}]);
+        var expected = [{a: '1', b: 'he,l\tlo', c: '3'}];
+        expected.columns = ['a', 'b', 'c'];
+        expect(dsv.csv.parse('a,b,c\n1,"he,l\tlo",3\n')).toEqual(expected);
       });
 
       it('parses unix newlines', function () {
-        expect(dsv.csv.parse('a,b,c\n1,2,3\n4,5,"6"\n7,8,9')).toEqual([
+        var expected = [
           {a: '1', b: '2', c: '3'},
           {a: '4', b: '5', c: '6'},
           {a: '7', b: '8', c: '9'}
-        ]);
+        ];
+        expected.columns = ['a', 'b', 'c'];
+        expect(dsv.csv.parse('a,b,c\n1,2,3\n4,5,"6"\n7,8,9')).toEqual(expected);
       });
 
       it('parses mac newlines', function () {
-        expect(dsv.csv.parse('a,b,c\r1,2,3\r4,5,"6"\r7,8,9')).toEqual([
+        var expected = [
           {a: '1', b: '2', c: '3'},
           {a: '4', b: '5', c: '6'},
           {a: '7', b: '8', c: '9'}
-        ]);
+        ];
+        expected.columns = ['a', 'b', 'c'];
+        expect(dsv.csv.parse('a,b,c\r1,2,3\r4,5,"6"\r7,8,9')).toEqual(expected);
       });
 
       it('parses dos newlines', function () {
-        expect(dsv.csv.parse('a,b,c\r\n1,2,3\r\n4,5,"6"\r\n7,8,9')).toEqual([
+        var expected = [
           {a: '1', b: '2', c: '3'},
           {a: '4', b: '5', c: '6'},
           {a: '7', b: '8', c: '9'}
-        ]);
+        ];
+        expected.columns = ['a', 'b', 'c'];
+        expect(dsv.csv.parse('a,b,c\r\n1,2,3\r\n4,5,"6"\r\n7,8,9')).toEqual(expected);
       });
     });
   });
 
   describe('tsv', function () {
     describe('#get', function () {
-      it('should load a file', function (done) {
+      it('should load a file', function () {
         $httpBackend.expectGET('test.tsv')
           .respond('a\tb\tc\n1\t2\t3\n4\t5\t6\n7\t8\t9');
+
+        var expected = [
+          {a: '1', b: '2', c: '3'},
+          {a: '4', b: '5', c: '6'},
+          {a: '7', b: '8', c: '9'}
+        ];
+        expected.columns = ['a', 'b', 'c'];
 
         dsv.tsv.get('test.tsv').success(function (data) {
-          expect(data).toEqual([
-            {a: '1', b: '2', c: '3'},
-            {a: '4', b: '5', c: '6'},
-            {a: '7', b: '8', c: '9'}
-          ]);
+          expect(data).toEqual(expected);
         });
 
         $httpBackend.flush();
       });
 
-      it('should accept a config object and accessor function', function (done) {
+      it('should accept a config object and accessor function', function () {
         $httpBackend.expectGET('test.tsv')
           .respond('a\tb\tc\n1\t2\t3\n4\t5\t6\n7\t8\t9');
+
+        var expected = [6, 15, 24];
+        expected.columns = ['a', 'b', 'c'];
 
         dsv.tsv.get('test.tsv', { cache: true }, function (d) { return (+d.a + +d.b + +d.c); }).success(function (data) {
-          expect(data).toEqual([
-            6,
-            15,
-            24
-          ]);
+          expect(data).toEqual(expected);
         });
 
         $httpBackend.flush();
       });
 
-      it('config object should be optional', function (done) {
+      it('config object should be optional', function () {
         $httpBackend.expectGET('test.tsv')
           .respond('a\tb\tc\n1\t2\t3\n4\t5\t6\n7\t8\t9');
 
+        var expected = [6, 15, 24];
+        expected.columns = ['a', 'b', 'c'];
+
         dsv.tsv.get('test.tsv', function (d) { return (+d.a + +d.b + +d.c); }).success(function (data) {
-          expect(data).toEqual([
-            6,
-            15,
-            24
-          ]);
+          expect(data).toEqual(expected);
         });
 
         $httpBackend.flush();
@@ -152,7 +166,7 @@ describe('Factory: dsv', function () {
     });
 
     describe('#getRows', function () {
-      it('should load a file', function (done) {
+      it('should load a file', function () {
         $httpBackend.expectGET('test.tsv')
           .respond('a\tb\tc\n1\t2\t3\n4\t5\t6\n7\t8\t9');
 
@@ -168,7 +182,7 @@ describe('Factory: dsv', function () {
         $httpBackend.flush();
       });
 
-      it('should accept a config object and accessor function', function (done) {
+      it('should accept a config object and accessor function', function () {
         $httpBackend.expectGET('test.tsv')
           .respond('a\tb\tc\n1\t2\t3\n4\t5\t6\n7\t8\t9');
 
@@ -184,7 +198,7 @@ describe('Factory: dsv', function () {
         $httpBackend.flush();
       });
 
-      it('config object should be optional', function (done) {
+      it('config object should be optional', function () {
         $httpBackend.expectGET('test.tsv')
           .respond('a\tb\tc\n1\t2\t3\n4\t5\t6\n7\t8\t9');
 
@@ -202,36 +216,46 @@ describe('Factory: dsv', function () {
     });
 
     describe('#parse', function () {
-      it('returns an array of objects', function () {
-        expect(dsv.tsv.parse('a\tb\tc\n1\t2\t3\n')).toEqual([{a: '1', b: '2', c: '3'}]);
+      it('returns an array of objects with the additional `columns` field', function () {
+        var expected = [{a: '1', b: '2', c: '3'}];
+        expected.columns = ['a', 'b', 'c'];
+        expect(dsv.tsv.parse('a\tb\tc\n1\t2\t3\n')).toEqual(expected);
       });
 
       it('parses quoted values', function () {
-        expect(dsv.tsv.parse('a\tb\tc\n1\t"he,l\tlo"\t3\n')).toEqual([{a: '1', b: 'he,l\tlo', c: '3'}]);
+        var expected = [{a: '1', b: 'he,l\tlo', c: '3'}];
+        expected.columns = ['a', 'b', 'c'];
+        expect(dsv.tsv.parse('a\tb\tc\n1\t"he,l\tlo"\t3\n')).toEqual(expected);
       });
 
       it('parses unix newlines', function () {
-        expect(dsv.tsv.parse('a\tb\tc\n1\t2\t3\n4\t5\t"6"\n7\t8\t9')).toEqual([
+        var expected = [
           {a: '1', b: '2', c: '3'},
           {a: '4', b: '5', c: '6'},
           {a: '7', b: '8', c: '9'}
-        ]);
+        ];
+        expected.columns = ['a', 'b', 'c'];
+        expect(dsv.tsv.parse('a\tb\tc\n1\t2\t3\n4\t5\t"6"\n7\t8\t9')).toEqual(expected);
       });
 
       it('parses mac newlines', function () {
-        expect(dsv.tsv.parse('a\tb\tc\r1\t2\t3\r4\t5\t"6"\r7\t8\t9')).toEqual([
+        var expected = [
           {a: '1', b: '2', c: '3'},
           {a: '4', b: '5', c: '6'},
           {a: '7', b: '8', c: '9'}
-        ]);
+        ];
+        expected.columns = ['a', 'b', 'c'];
+        expect(dsv.tsv.parse('a\tb\tc\r1\t2\t3\r4\t5\t"6"\r7\t8\t9')).toEqual(expected);
       });
 
       it('parses dos newlines', function () {
-        expect(dsv.tsv.parse('a\tb\tc\r\n1\t2\t3\r\n4\t5\t"6"\r\n7\t8\t9')).toEqual([
+        var expected = [
           {a: '1', b: '2', c: '3'},
           {a: '4', b: '5', c: '6'},
           {a: '7', b: '8', c: '9'}
-        ]);
+        ];
+        expected.columns = ['a', 'b', 'c'];
+        expect(dsv.tsv.parse('a\tb\tc\r\n1\t2\t3\r\n4\t5\t"6"\r\n7\t8\t9')).toEqual(expected);
       });
     });
 
