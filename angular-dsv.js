@@ -23,7 +23,7 @@ function dsvFactory ($http, $window) {
       var config = {
         method: 'get',
         transformResponse: function (data) {
-          return _dsv.parse(data, f);
+          return data == null ? [] : _dsv.parse(data, f);
         }
       };
       angular.extend(config, requestConfig);
@@ -54,7 +54,7 @@ function dsvFactory ($http, $window) {
         method: 'get',
         url: url,
         transformResponse: function (data) {
-          return _dsv.parseRows(data, params.f);
+          return data == null ? [] : _dsv.parseRows(data, params.f);
         }
       };
 
@@ -83,12 +83,41 @@ angular.module('hc.dsv', [])
 },{"d3-dsv":2}],2:[function(require,module,exports){
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
-  typeof define === 'function' && define.amd ? define('d3-dsv', ['exports'], factory) :
-  factory((global.d3_dsv = {}));
+  typeof define === 'function' && define.amd ? define(['exports'], factory) :
+  (factory((global.d3_dsv = {})));
 }(this, function (exports) { 'use strict';
 
   function dsv(delimiter) {
     return new Dsv(delimiter);
+  }
+
+  function objectConverter(columns) {
+    return new Function("d", "return {" + columns.map(function(name, i) {
+      return JSON.stringify(name) + ": d[" + i + "]";
+    }).join(",") + "}");
+  }
+
+  function customConverter(columns, f) {
+    var object = objectConverter(columns);
+    return function(row, i) {
+      return f(object(row), i, columns);
+    };
+  }
+
+  // Compute unique columns in order of discovery.
+  function inferColumns(rows) {
+    var columnSet = Object.create(null),
+        columns = [];
+
+    rows.forEach(function(row) {
+      for (var column in row) {
+        if (!(column in columnSet)) {
+          columns.push(columnSet[column] = column);
+        }
+      }
+    });
+
+    return columns;
   }
 
   function Dsv(delimiter) {
@@ -96,14 +125,12 @@ angular.module('hc.dsv', [])
         delimiterCode = delimiter.charCodeAt(0);
 
     this.parse = function(text, f) {
-      var o;
-      return this.parseRows(text, function(row, i) {
-        if (o) return o(row, i - 1);
-        var a = new Function("d", "return {" + row.map(function(name, i) {
-          return JSON.stringify(name) + ": d[" + i + "]";
-        }).join(",") + "}");
-        o = f ? function(row, i) { return f(a(row), i); } : a;
+      var convert, columns, rows = this.parseRows(text, function(row, i) {
+        if (convert) return convert(row, i - 1);
+        columns = row, convert = f ? customConverter(row, f) : objectConverter(row);
       });
+      rows.columns = columns;
+      return rows;
     };
 
     this.parseRows = function(text, f) {
@@ -121,7 +148,7 @@ angular.module('hc.dsv', [])
         if (eol) return eol = false, EOL; // special case: end of line
 
         // special case: quotes
-        var j = I;
+        var j = I, c;
         if (text.charCodeAt(j) === 34) {
           var i = j;
           while (i++ < N) {
@@ -131,7 +158,7 @@ angular.module('hc.dsv', [])
             }
           }
           I = i + 2;
-          var c = text.charCodeAt(i + 1);
+          c = text.charCodeAt(i + 1);
           if (c === 13) {
             eol = true;
             if (text.charCodeAt(i + 2) === 10) ++I;
@@ -143,7 +170,8 @@ angular.module('hc.dsv', [])
 
         // common case: find next delimiter or newline
         while (I < N) {
-          var c = text.charCodeAt(I++), k = 1;
+          var k = 1;
+          c = text.charCodeAt(I++);
           if (c === 10) eol = true; // \n
           else if (c === 13) { eol = true; if (text.charCodeAt(I) === 10) ++I, ++k; } // \r|\r\n
           else if (c !== delimiterCode) continue;
@@ -167,22 +195,11 @@ angular.module('hc.dsv', [])
       return rows;
     }
 
-    this.format = function(rows) {
-      if (Array.isArray(rows[0])) return this.formatRows(rows); // deprecated; use formatRows
-      var fieldSet = Object.create(null), fields = [];
-
-      // Compute unique fields in order of discovery.
-      rows.forEach(function(row) {
-        for (var field in row) {
-          if (!((field += "") in fieldSet)) {
-            fields.push(fieldSet[field] = field);
-          }
-        }
-      });
-
-      return [fields.map(formatValue).join(delimiter)].concat(rows.map(function(row) {
-        return fields.map(function(field) {
-          return formatValue(row[field]);
+    this.format = function(rows, columns) {
+      if (columns == null) columns = inferColumns(rows);
+      return [columns.map(formatValue).join(delimiter)].concat(rows.map(function(row) {
+        return columns.map(function(column) {
+          return formatValue(row[column]);
         }).join(delimiter);
       })).join("\n");
     };
@@ -198,14 +215,14 @@ angular.module('hc.dsv', [])
     function formatValue(text) {
       return reFormat.test(text) ? "\"" + text.replace(/\"/g, "\"\"") + "\"" : text;
     }
-  };
+  }
 
   dsv.prototype = Dsv.prototype;
 
   var csv = dsv(",");
   var tsv = dsv("\t");
 
-  var version = "0.1.9";
+  var version = "0.1.14";
 
   exports.version = version;
   exports.dsv = dsv;
