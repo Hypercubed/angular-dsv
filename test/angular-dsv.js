@@ -56,6 +56,38 @@ describe('Factory: dsv', function () {
 
         $httpBackend.flush();
       });
+
+      it('should correctly handle canceled requests', inject(function ($q, $rootScope) {
+        $httpBackend.expectGET('test.csv')
+          .respond('a,b,c\n1,2,3\n4,5,6\n7,8,9');
+
+        var responseData;
+        var canceler = $q.defer();
+
+        dsv.csv.get('test.csv', {timeout: canceler.promise}).catch(function (err) {
+          responseData = err.data;
+        });
+
+        canceler.resolve();
+        $rootScope.$apply();
+
+        expect(responseData).toEqual([]);
+      }));
+
+      it('should correctly handle HTTP errors', function () {
+        $httpBackend.expectGET('test.csv')
+          .respond(403, 'Error');
+
+        var responseData;
+
+        dsv.csv.get('test.csv').catch(function (err) {
+          responseData = err.data;
+        });
+
+        $httpBackend.flush();
+
+        expect(responseData).toEqual([]);
+      });
     });
 
     describe('#getRows', function () {
@@ -73,6 +105,38 @@ describe('Factory: dsv', function () {
         });
 
         $httpBackend.flush();
+      });
+
+      it('should correctly handle canceled requests', inject(function ($q, $rootScope) {
+        $httpBackend.expectGET('test.csv')
+          .respond('a,b,c\n1,2,3\n4,5,6\n7,8,9');
+
+        var responseData;
+        var canceler = $q.defer();
+
+        dsv.csv.getRows('test.csv', {timeout: canceler.promise}).catch(function (err) {
+          responseData = err.data;
+        });
+
+        canceler.resolve();
+        $rootScope.$apply();
+
+        expect(responseData).toEqual([]);
+      }));
+
+      it('should correctly handle HTTP errors', function () {
+        $httpBackend.expectGET('test.csv')
+          .respond(403, 'Error');
+
+        var responseData;
+
+        dsv.csv.getRows('test.csv').catch(function (err) {
+          responseData = err.data;
+        });
+
+        $httpBackend.flush();
+
+        expect(responseData).toEqual([]);
       });
     });
 
@@ -141,6 +205,38 @@ describe('Factory: dsv', function () {
         $httpBackend.flush();
       });
 
+      it('should correctly handle canceled requests', inject(function ($q, $rootScope) {
+        $httpBackend.expectGET('test.tsv')
+          .respond('a\tb\tc\n1\t2\t3\n4\t5\t6\n7\t8\t9');
+
+        var responseData;
+        var canceler = $q.defer();
+
+        dsv.tsv.get('test.tsv', {timeout: canceler.promise}).catch(function (err) {
+          responseData = err.data;
+        });
+
+        canceler.resolve();
+        $rootScope.$apply();
+
+        expect(responseData).toEqual([]);
+      }));
+
+      it('should correctly handle HTTP errors', function () {
+        $httpBackend.expectGET('test.tsv')
+          .respond(403, 'Error');
+
+        var responseData;
+
+        dsv.tsv.get('test.tsv').catch(function (err) {
+          responseData = err.data;
+        });
+
+        $httpBackend.flush();
+
+        expect(responseData).toEqual([]);
+      });
+
       it('should accept a config object and accessor function', function () {
         $httpBackend.expectGET('test.tsv')
           .respond('a\tb\tc\n1\t2\t3\n4\t5\t6\n7\t8\t9');
@@ -193,6 +289,38 @@ describe('Factory: dsv', function () {
         });
 
         $httpBackend.flush();
+      });
+
+      it('should correctly handle canceled requests', inject(function ($q, $rootScope) {
+        $httpBackend.expectGET('test.tsv')
+          .respond('a\tb\tc\n1\t2\t3\n4\t5\t6\n7\t8\t9');
+
+        var responseData;
+        var canceler = $q.defer();
+
+        dsv.tsv.getRows('test.tsv', {timeout: canceler.promise}).catch(function (err) {
+          responseData = err.data;
+        });
+
+        canceler.resolve();
+        $rootScope.$apply();
+
+        expect(responseData).toEqual([]);
+      }));
+
+      it('should correctly handle HTTP errors', function () {
+        $httpBackend.expectGET('test.tsv')
+          .respond(403, 'Error');
+
+        var responseData;
+
+        dsv.tsv.getRows('test.tsv').catch(function (err) {
+          responseData = err.data;
+        });
+
+        $httpBackend.flush();
+
+        expect(responseData).toEqual([]);
       });
 
       it('should accept a config object and accessor function', function () {
