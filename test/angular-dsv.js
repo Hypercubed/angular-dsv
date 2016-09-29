@@ -1,4 +1,5 @@
 /* global describe, it, beforeEach, inject, expect */
+/* eslint max-nested-callbacks: 0 */
 
 // TODO: test ng-include
 
@@ -8,7 +9,8 @@ describe('Factory: dsv', function () {
   // load the directive's module
   beforeEach(module('hc.dsv'));
 
-  var dsv, $httpBackend;
+  var dsv;
+  var $httpBackend;
 
   beforeEach(inject(function (_$httpBackend_, _dsv_) {
     dsv = _dsv_;
@@ -45,9 +47,12 @@ describe('Factory: dsv', function () {
         ];
         expected.columns = ['a', 'b', 'c'];
 
-        dsv.csv.get('test.csv').then(function (response) {
-          expect(response.data).toEqual(expected);
-        });
+        dsv
+          .csv
+          .get('test.csv')
+          .then(function (response) {
+            expect(response.data).toEqual(expected);
+          });
 
         $httpBackend.flush();
       });
@@ -143,9 +148,14 @@ describe('Factory: dsv', function () {
         var expected = [6, 15, 24];
         expected.columns = ['a', 'b', 'c'];
 
-        dsv.tsv.get('test.tsv', { cache: true }, function (d) { return (+d.a + +d.b + +d.c); }).success(function (data) {
-          expect(data).toEqual(expected);
-        });
+        dsv
+          .tsv
+          .get('test.tsv', {cache: true}, function (d) {
+            return (Number(d.a) + Number(d.b) + Number(d.c));
+          })
+          .success(function (data) {
+            expect(data).toEqual(expected);
+          });
 
         $httpBackend.flush();
       });
@@ -157,7 +167,10 @@ describe('Factory: dsv', function () {
         var expected = [6, 15, 24];
         expected.columns = ['a', 'b', 'c'];
 
-        dsv.tsv.get('test.tsv', function (d) { return (+d.a + +d.b + +d.c); }).success(function (data) {
+        dsv.tsv.get('test.tsv', function (d) {
+          return (Number(d.a) + Number(d.b) + Number(d.c));
+        })
+        .success(function (data) {
           expect(data).toEqual(expected);
         });
 
@@ -186,12 +199,14 @@ describe('Factory: dsv', function () {
         $httpBackend.expectGET('test.tsv')
           .respond('a\tb\tc\n1\t2\t3\n4\t5\t6\n7\t8\t9');
 
-        dsv.tsv.getRows('test.tsv', {}, function (d) { return { values: d }; }).success(function (data) {
+        dsv.tsv.getRows('test.tsv', {}, function (d) {
+          return {values: d};
+        }).success(function (data) {
           expect(data).toEqual([
-            { values: ['a', 'b', 'c'] },
-            { values: ['1', '2', '3'] },
-            { values: ['4', '5', '6'] },
-            { values: ['7', '8', '9'] }
+            {values: ['a', 'b', 'c']},
+            {values: ['1', '2', '3']},
+            {values: ['4', '5', '6']},
+            {values: ['7', '8', '9']}
           ]);
         });
 
@@ -202,14 +217,19 @@ describe('Factory: dsv', function () {
         $httpBackend.expectGET('test.tsv')
           .respond('a\tb\tc\n1\t2\t3\n4\t5\t6\n7\t8\t9');
 
-        dsv.tsv.getRows('test.tsv', function (d) { return { values: d }; }).success(function (data) {
-          expect(data).toEqual([
-            { values: ['a', 'b', 'c'] },
-            { values: ['1', '2', '3'] },
-            { values: ['4', '5', '6'] },
-            { values: ['7', '8', '9'] }
-          ]);
-        });
+        dsv
+          .tsv
+          .getRows('test.tsv', function (d) {
+            return {values: d};
+          })
+          .success(function (data) {
+            expect(data).toEqual([
+              {values: ['a', 'b', 'c']},
+              {values: ['1', '2', '3']},
+              {values: ['4', '5', '6']},
+              {values: ['7', '8', '9']}
+            ]);
+          });
 
         $httpBackend.flush();
       });

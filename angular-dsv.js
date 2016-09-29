@@ -3,7 +3,7 @@
 
 'use strict';
 
-var d3_dsv = require('d3-dsv').dsv;
+var d3DSV = require('d3-dsv').dsv;
 
 function parseParams (requestConfig, f) {
   return angular.isFunction(requestConfig) ? {
@@ -15,15 +15,16 @@ function parseParams (requestConfig, f) {
   };
 }
 
-function dsvFactory ($http, $window) {
+dsvFactory.$inject = ['$http'];
+function dsvFactory ($http) {
   function factory (delimiter) {
-    var _dsv = d3_dsv(delimiter);
+    var _dsv = d3DSV(delimiter);
 
     function dsv (requestConfig, f) {
       var config = {
         method: 'get',
         transformResponse: function (data) {
-          return data == null ? [] : _dsv.parse(data, f);
+          return data === null ? [] : _dsv.parse(data, f);
         }
       };
       angular.extend(config, requestConfig);
@@ -54,7 +55,7 @@ function dsvFactory ($http, $window) {
         method: 'get',
         url: url,
         transformResponse: function (data) {
-          return data == null ? [] : _dsv.parseRows(data, params.f);
+          return data === null ? [] : _dsv.parseRows(data, params.f);
         }
       };
 
@@ -72,8 +73,6 @@ function dsvFactory ($http, $window) {
 
   return factory;
 }
-
-dsvFactory.$inject = ['$http', '$window'];
 
 module.exports = 'hc.dsv';
 
