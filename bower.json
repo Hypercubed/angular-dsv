@@ -1,6 +1,5 @@
 {
   "name": "angular-dsv",
-  "version": "0.0.5",
   "authors": [
     "J. Harshbarger"
   ],
@@ -20,7 +19,9 @@
     "node_modules",
     "bower_components",
     "test",
-    "tests"
+    "karma.conf.js",
+    "lib",
+    "package.json"
   ],
   "dependencies": {
     "angular": ">= 1.2.5"
