@@ -198,8 +198,8 @@ describe('Factory: dsv', function () {
         ];
         expected.columns = ['a', 'b', 'c'];
 
-        dsv.tsv.get('test.tsv').success(function (data) {
-          expect(data).toEqual(expected);
+        dsv.tsv.get('test.tsv').then(function (response) {
+          expect(response.data).toEqual(expected);
         });
 
         $httpBackend.flush();
@@ -249,8 +249,8 @@ describe('Factory: dsv', function () {
           .get('test.tsv', {cache: true}, function (d) {
             return (Number(d.a) + Number(d.b) + Number(d.c));
           })
-          .success(function (data) {
-            expect(data).toEqual(expected);
+          .then(function (response) {
+            expect(response.data).toEqual(expected);
           });
 
         $httpBackend.flush();
@@ -266,8 +266,8 @@ describe('Factory: dsv', function () {
         dsv.tsv.get('test.tsv', function (d) {
           return (Number(d.a) + Number(d.b) + Number(d.c));
         })
-        .success(function (data) {
-          expect(data).toEqual(expected);
+        .then(function (response) {
+          expect(response.data).toEqual(expected);
         });
 
         $httpBackend.flush();
@@ -279,8 +279,8 @@ describe('Factory: dsv', function () {
         $httpBackend.expectGET('test.tsv')
           .respond('a\tb\tc\n1\t2\t3\n4\t5\t6\n7\t8\t9');
 
-        dsv.tsv.getRows('test.tsv').success(function (data) {
-          expect(data).toEqual([
+        dsv.tsv.getRows('test.tsv').then(function (response) {
+          expect(response.data).toEqual([
             ['a', 'b', 'c'],
             ['1', '2', '3'],
             ['4', '5', '6'],
@@ -329,8 +329,8 @@ describe('Factory: dsv', function () {
 
         dsv.tsv.getRows('test.tsv', {}, function (d) {
           return {values: d};
-        }).success(function (data) {
-          expect(data).toEqual([
+        }).then(function (response) {
+          expect(response.data).toEqual([
             {values: ['a', 'b', 'c']},
             {values: ['1', '2', '3']},
             {values: ['4', '5', '6']},
@@ -350,8 +350,8 @@ describe('Factory: dsv', function () {
           .getRows('test.tsv', function (d) {
             return {values: d};
           })
-          .success(function (data) {
-            expect(data).toEqual([
+          .then(function (response) {
+            expect(response.data).toEqual([
               {values: ['a', 'b', 'c']},
               {values: ['1', '2', '3']},
               {values: ['4', '5', '6']},

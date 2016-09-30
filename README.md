@@ -16,15 +16,16 @@ The dsv service takes a single argument and returns a new `$http`-like service f
 
 ### dsv.tsv(config[, accessor])
 
-The `dsv.tsv` service is an example of 'delimiter'-seperated value interface for tab-delimited tables.  It is service which takes two arguments: a configuration object like that expected by angular's [$http](https://docs.angularjs.org/api/ng/service/$http), and an optional accessor function for transforming each row of the tabular data file.  Like `$http` `dsv.tsv` returns a promise with two "$http specific methods": `.success` and `.error` (in addition to `.then`)
+The `dsv.tsv` service is an example of 'delimiter'-seperated value interface for tab-delimited tables.  It is service which takes two arguments: a configuration object like that expected by angular's [$http](https://docs.angularjs.org/api/ng/service/$http), and an optional accessor function for transforming each row of the tabular data file.  Like `$http` `dsv.tsv` returns a promise:
 
 ```(js)
   dsv.tsv({method: 'GET', url: '/someUrl'}, function(d) { return {key: d.key, value: +d.value}; })
-    .success(function(data, status, headers, config) {
+    .then(function(response) {
+      console.log(response.data);
       // this callback will be called asynchronously
       // when the response is available
     })
-    .error(function(data, status, headers, config) {
+    .catch(function(err) {
       // called asynchronously if an error occurs
       // or server returns response with an error status.
     });
@@ -52,7 +53,7 @@ The resulting JavaScript array is:
 Like `$http` `dsv.tsv` provides a shortcut method for HTTP GET:
 
 ```(js)
-dsv.tsv.get('/someUrl', accessorFunction).success(successCallback);
+dsv.tsv.get('/someUrl', accessorFunction).then(successCallback);
 ```
 
 #### dsv.tsv.getRows(url\[, config]\[, accessor])
